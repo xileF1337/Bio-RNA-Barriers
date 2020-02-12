@@ -1228,6 +1228,10 @@ Return the single minimum given by a 1-based C<$index>.
 
 Return a list of minima given by a 1-based list of C<@indices>.
 
+=head3 C<get_global_min()>
+
+Return the basin represented by the (global) mfe structure (i.e. basin 1).
+
 =head3 C<connected_mins()>
 
 List of all minima connected to the mfe minimum (min 1).
