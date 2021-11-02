@@ -27,6 +27,7 @@ my $builder = Module::Build->new(
         'List::Util'                => 1.50,
         'List::MoreUtils'           => 0.428,
         'File::Spec'                => 3.75,
+        'IPC::System::Simple'       => 1.25,
     },
     add_to_cleanup     => [ 'Bio-RNA-Barriers-*' ],
 );
