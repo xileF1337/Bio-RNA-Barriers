@@ -1,0 +1,24 @@
+name: barriers
+channels:
+  - file:////scr/bintang/felix/conda/conda-bld
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - perl
+  - perl-autodie
+  - perl-file-spec
+  - perl-file-slurp
+  - perl-list-moreutils
+  - perl-module-build
+  - perl-moose
+  # - perl-moosex-strictconstructor
+  - perl-namespace-autoclean
+  - perl-ipc-system-simple
+  - perl-scalar-list-utils
+  - perl-test-exception
+  - perl-test-fatal
+  - perl-test-needs
+  - perl-test-nowarnings
+prefix: /scr/bintang/felix/conda/envs/barriers
+
