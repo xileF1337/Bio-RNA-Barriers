@@ -139,7 +139,6 @@ sub get_mins {
         $min_index--;           # Perl is 0-based, barriers 1-based
     }
 
-    # my @mins = ($self->mins)[@min_indices];     # array slice
     my @mins = @{$self->_mins}[@min_indices];     # array slice
     return @mins;
 }
@@ -209,9 +208,9 @@ sub keep_connected {
     return @connected_indices;
 }
 
-# Given an ordered list of (all???) indices of connected minima, delete
-# all other minima and update their ancesters' basin size information
-# accordingly.
+# Given an ordered list of indices of all connected minima (as returned by
+# RateMatrix::keep_connected()), delete all other minima and update their
+# ancesters' basin size information accordingly.
 # Arguments:
 #   ordered_connected_indices: ordered list of indices of (all???)
 #       connected minima.
@@ -289,23 +288,6 @@ sub keep_first_mins {
     my @removed_mins = splice @{ $self->_mins }, $max_min_count;
     $self->_update_ancestors(@removed_mins);
 
-    # # If the bsize attributes are present, update the basin energy of all
-    # # (grand)* father basins (substract energy of this one).
-    # # The minima need to be processed in reversed order because, if an
-    # # ancester of a removed min is also removed, its merged basin energy
-    # # includes the basin energy of its child, and thus this contribution
-    # # would be substracted multiple times from older ancesters. In
-    # # reversed order, the child contribution is first substracted from the
-    # # ancestors, and then the contribution of the removed ancestors does
-    # # not include the child anymore.
-    # foreach my $removed_min (reverse @removed_mins) {
-    #     foreach my $ancestor_min ($removed_min->ancestors) {
-    #         $ancestor_min->_merged_basin_energy(        # private writer
-    #             $ancestor_min->merged_basin_energy
-    #             - $removed_min->grad_basin_energy
-    #         );
-    #     }
-    # }
 
     return @removed_mins;
 }
@@ -378,13 +360,13 @@ of a I<Barriers> run
     print "There are ", $bardat->min_count, " minima.";
     my $min3 = $bardat->get_min(3);
     print $min3->grad_struct_count,
-          " structures lead to basin 3 via a gradient walk.\n";
+          " structures lead to basin 3 via a gradient walk.\n"
         if $min3->has_bsize;
     print "Min ", $min3->index, " is ", ($min3->is_connected ? "" : "NOT"),
           " connected to the mfe structure.\n";
 
     # Print the mfe basin line as in the results file
-    my $mfe_min = $bardat->get_min(1);
+    my $mfe_min = $bardat->get_global_min();
     print "$mfe_min\n";
 
 
@@ -397,9 +379,36 @@ methods, please refer to its documentation.
 
 =head1 METHODS
 
-=head3 $res->new()
+=head3 Bio::RNA::Barriers::Results->new()
 
-TODO constructor.
+Constructs the results object from a Barriers results file.
+
+=over 4
+
+=item Supported argument list types:
+
+=over 4
+
+=item new($barriers_file_path):
+
+Open handle and read data from the passed path, set file name accordingly.
+
+=item new($barriers_handle):
+
+A file handle to read data from, C<file_name()> will return
+undef.
+
+=item new($barriers_handle, $barriers_file_path):
+
+Read data from handle and set file name from a given path.
+
+=item new($hash_ref):
+
+Manual construction from required attributes. Only for experts.
+
+=back
+
+=back
 
 =head3 $res->seq()
 
@@ -415,78 +424,51 @@ Returns a list of all minima. Useful for iteration in C<for> loops.
 
 =head3 $res->get_min($index)
 
-Return the single minimum given by a 1-based C<$index>.
+Return the single minimum given by a 1-based C<$index> (as used in the results
+file).
 
 =head3 $res->get_mins(@indices)
 
-Return a list of minima given by a 1-based list of C<@indices>.
+Return a list of minima given by a 1-based list of C<@indices> (as used in the
+results file).
 
 =head3 $res->get_global_min()
 
-Return the basin represented by the (global) mfe structure (i.e. basin 1).
+Returns the basin represented by the (global) mfe structure (i.e. basin 1).
 
 =head3 $res->min_count()
 
-Return the total number of basins.
+Returns the total number of basins.
 
 =head3 $res->connected_mins()
 
-List of all minima connected to the mfe minimum (min 1).
+Returns a list of all minima connected to the mfe minimum (min 1).
 
 =head3 $res->connected_indices()
 
-List of indices of all connected minima (cf. connected_mins()).
+Returns a list of indices of all connected minima (cf. C<connected_mins()>).
 
 =head3 $res->keep_connected()
 
 Keep only connected minima and remove all others. The indices are remapped to
 1..k for k kept minima.  Returns (old) indices of all kept minima.
 
-=head3 $res->update_connected()
+=head3 $res->update_connected(@connected_mins)
 
-Given an ordered list of (all???) indices of connected minima, delete
-all other minima and update their ancesters' basin size information
-accordingly.
+Given an ordered list of indices of all connected minima (as returned by
+C<RateMatrix::keep_connected()>), delete all other minima and update their
+ancesters' basin size information accordingly.
 
-=over 4
+=head3 $res->keep_first_mins($min_count)
 
-=item Arguments:
-
-=over 4
-
-=item ordered_connected_indices:
-
-Ordered list of indices of (all???) connected minima to keep.
-
-=back
-
-=back
-
-=head3 $res->keep_first_mins()
-
-Keep only the first k mins. If there are only k or less mins, do
-nothing.
+Keep only the first C<$min_count> mins. (If there are only that many or less
+minima in total, do nothing.)
 
 WARNING: THIS CAN DISCONNECT THE LANDSCAPE! The bar file will still look
 connected, however, modifying the rate matrix accordingly can lead to
 non-ergodicity (e.g. when basin 3 merged to 2, 2/3 merged to 1 because
-of a possible transition from 3 to 1, and basin 3 is then removed).
-
-=over 4
-
-=item Arguments:
-
-=over 4
-
-=item max_min_count:
-
-number of minima to keep.
-
-=back
-
-=back
-
-Returns a list of all removed mins (may be empty).
+of a possible transition from 3 to 1, and basin 3 is then removed).  Returns a
+list of all removed mins (may be empty).
 
 =head3 $res->has_bsize()
 
@@ -501,7 +483,8 @@ parsed from a file (of course...).  Returns the path as a string.
 
 =head3 $res->stringify()
 
-Convert back to Barriers file. Also supports stringification overloading.
+Convert back to Barriers file. Also supports stringification overloading, i.
+e. C<"$res"> is equivalent to C<$res-E<gt>stringify()>.
 
 
 =cut

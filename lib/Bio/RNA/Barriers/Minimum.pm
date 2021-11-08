@@ -344,9 +344,9 @@ methods can be used for various queries.
 
 =head1 METHODS
 
-=head3 $min->new()
+=head3 $min->new($results_file_line)
 
-TODO constructor.
+Construct a minimum object from a single line of the I<Barriers> results file.
 
 =head3 $min->ancestors()
 
@@ -367,7 +367,7 @@ input structures (except for disconnected structures and other missing ones
 (???)).
 
 This attribute is only available if Barriers was used with the C<--bsize>
-option. Use C<$min->has_bsize()> to query this.
+option. Use C<$min-E<gt>has_bsize()> to query this.
 
 =head3 $min->father_struct_count()
 
@@ -375,7 +375,7 @@ The number of structures in the basin that we merge into (father basin) B<at
 the time of merging>.
 
 This attribute is only available if Barriers was used with the C<--bsize>
-option. Use C<$min->has_bsize()> to query this.
+option. Use C<$min-E<gt>has_bsize()> to query this.
 
 =head3 $min->merged_basin_energy()
 
@@ -385,7 +385,7 @@ corresponds to the ensemble's free energy as far as it was enumerated by
 RNAsubopt (excluding disconnected structures).
 
 This attribute is only available if Barriers was used with the C<--bsize>
-option. Use C<$min->has_bsize()> to query this.
+option. Use C<$min-E<gt>has_bsize()> to query this.
 
 =head3 $min->grad_struct_count()
 
@@ -396,7 +396,7 @@ exactly to the total number of structs if --max==Inf (some are missing)?
 Issues due to degenerate energies?
 
 This attribute is only available if Barriers was used with the C<--bsize>
-option. Use C<$min->has_bsize()> to query this.
+option. Use C<$min-E<gt>has_bsize()> to query this.
 
 =head3 $min->grad_basin_energy()
 
@@ -407,7 +407,7 @@ digit precision, and of course up to the enumeration threshold used for
 I<RNAsubopt>).
 
 This attribute is only available if Barriers was used with the C<--bsize>
-option. Use C<$min->has_bsize()> to query this.
+option. Use C<$min-E<gt>has_bsize()> to query this.
 
 =head3 $min->is_global_min()
 

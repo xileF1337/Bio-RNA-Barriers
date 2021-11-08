@@ -291,7 +291,8 @@ sub connected_states {
 }
 
 # Only keep the states connected to the mfe (as determined by
-# connected_states()).
+# connected_states()). Returns a list of all connected (and thus preserved)
+# minima.
 sub keep_connected {
     my ($self) = @_;
     my @connected_indices = map {$_ - 1} $self->connected_states;
@@ -492,6 +493,12 @@ transition rate matrix.
 
     use Bio::RNA::Barriers;
 
+    # Functional interface using plain Perl lists to store the matrix.
+    my $list_mat
+        = Bio::RNA::Barriers::RateMatrix->read_text_rate_matrix($input_handle);
+    $list_mat
+        = Bio::RNA::Barriers::RateMatrix->read_bin_rate_matrix($input_handle);
+
     # Read a binary rate matrix directly from file. Binary matrices are more
     # precise and smaller than text matrices.
     my $rate_matrix = Bio::RNA::Barriers::RateMatrix->new(
@@ -531,7 +538,7 @@ in text and binary format.
 
 =head1 METHODS
 
-=head3 $mat->new()
+=head3 Bio::RNA::Barriers::RateMatrix->new(arg_name => $arg, ...)
 
 Constructor. Reads a rate matrix from a file / handle and creates a new rate
 matrix object.
@@ -551,12 +558,12 @@ Source of the data to read. Pass either or both.
 Specifies whether the input data is in binary or text format. Must be either
 C<'TXT'> or C<'BIN'>.
 
-=item splice_on_parsing
+=item splice_on_parsing (optional)
 
 Array ref of integers denoting states for which the transition rates should be
 parsed. All other states are skipped. This dramatically improves the
 performance and memory efficiency for large matrices if only a few states are
-relevant (e.g. when only connected states are relevant).
+relevant (e.g. only connected states).
 
 =back
 
@@ -572,17 +579,21 @@ handle.
 Specifies whether the input data is in binary or text format. Must be either
 C<'TXT'> or C<'BIN'>.
 
-=head3 $mat->read_text_rate_matrix($input_matrix_filehandle)
+=head3 Bio::RNA::RateMatrix->read_text_rate_matrix($input_matrix_filehandle)
 
 Class method. Reads a rate matrix in text format from the passed file
-handle and constructs a matrix (2-dim array) from it. Returns a
-reference to the constructed rate matrix.
+handle and constructs a matrix (2-dim array) from it. Returns an array
+reference containing the parsed rate matrix.
 
-=head3 $mat->read_bin_rate_matrix($input_matrix_filehandle)
+Use this function if you do not want to use the object-oriented interface.
+
+=head3 Bio::RNA::RateMatrix->read_bin_rate_matrix($input_matrix_filehandle)
 
 Class method. Reads a rate matrix in binary format from the passed file
-handle and constructs a matrix (2-dim array) from it. Returns a
-reference to the constructed rate matrix.
+handle and constructs a matrix (2-dim array) from it. Returns an array
+reference containing the parsed rate matrix.
+
+Use this function if you do not want to use the object-oriented interface.
 
 =head3 $mat->dim()
 
@@ -612,51 +623,26 @@ C<connected_states()>).
 =head3 $mat->keep_states(@indices)
 
 Remove all but the passed states from this rate matrix. States are 1-based
-(first state = state 1) just as in the results file.
+(first state = state 1) just as in the results file. C<@indices> may be
+unordered and contain duplicates.
 
-=over 4
+=head3 $mat->splice(@indices)
 
-=item Arguments:
+Only keep the passed states and reorder them to match the order of
+C<@indices>. In particular, the same state can be passed multiple times and
+will then be deep-copied. C<@indices> may be unordered and contain duplicates.
 
-=over 4
+=head3 $mat->print_as_text($out_handle)
 
-=item indices
-
-List of states to be kept. It can be unordered and may contain duplicates.
-
-=back
-
-=back
-
-=head3 $mat->splice()
-
-Only keep the passed states and reorder them as in the passed list. In
-particular, the same state can be passed multiple times and will then be
-deep-copied.
-
-=over 4
-
-=item Arguments:
-
-=over 4
-
-=item indices
-
-Ordered list of states defining the resulting matrix. May contain duplicates.
-
-=back
-
-=back
-
-=head3 $mat->print_as_text()
-
-Print this matrix as text, either to the passed handle, or to STDOUT.
+Print this matrix as text, either to the passed handle, or to STDOUT if
+C<$out_handle> is not provided.
 
 =head3 $mat->print_as_bin()
 
-Print this matrix as binary data, either to the passed handle or to
-STDOUT.  Data format: matrix dimension as integer, then column by column
-as double.
+Print this matrix as binary data, either to the passed handle, or to STDOUT if
+C<$out_handle> is not provided.
+
+Data format: matrix dimension as integer, then column by column as double.
 
 =head3 $mat->serialize()
 
