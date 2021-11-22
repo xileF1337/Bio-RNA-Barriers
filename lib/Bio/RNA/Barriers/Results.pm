@@ -487,6 +487,71 @@ Convert back to Barriers file. Also supports stringification overloading, i.
 e. C<"$res"> is equivalent to C<$res-E<gt>stringify()>.
 
 
+=head1 AUTHOR
+
+Felix Kuehnl, C<< <felix at bioinf.uni-leipzig.de> >>
+
+=head1 BUGS
+
+Please report any bugs or feature requests to C<bug-bio-rna-barriers at
+rt.cpan.org>, or through the web interface at
+L<https://rt.cpan.org/NoAuth/ReportBug.html?Queue=Bio-RNA-Barriers>.  I will
+be notified, and then you'll automatically be notified of progress on your bug
+as I make changes.
+
+
+=head1 SUPPORT
+
+You can find documentation for this module with the perldoc command.
+
+    perldoc Bio::RNA::Barriers
+
+
+You can also look for information at the official Barriers website:
+
+L<https://www.tbi.univie.ac.at/RNA/Barriers/>
+
+
+=over 4
+
+=item * RT: CPAN's request tracker (report bugs here)
+
+L<https://rt.cpan.org/NoAuth/Bugs.html?Dist=Bio-RNA-Barriers>
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/Bio-RNA-Barriers>
+
+=item * CPAN Ratings
+
+L<https://cpanratings.perl.org/d/Bio-RNA-Barriers>
+
+=item * Search CPAN
+
+L<https://metacpan.org/release/Bio-RNA-Barriers>
+
+=back
+
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2019-2021 Felix Kuehnl.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see L<http://www.gnu.org/licenses/>.
+
+
+
 =cut
 
 
