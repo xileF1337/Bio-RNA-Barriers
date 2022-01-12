@@ -14,6 +14,7 @@ t/11-construction_rates.t
 t/20-attribs_has_bsize.t
 t/21-attribs_is_connected.t
 t/22-attribs_has_saddle.t
+t/23-attribs_delta_energy.t
 t/30-stringify.t
 t/50-rates_stringify.t
 t/51-rates_dim.t

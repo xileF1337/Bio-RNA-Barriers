@@ -302,6 +302,14 @@ sub has_bsize {
     return $has_bsize;
 }
 
+# Get the delta_E of the landscape, i. e. the energy difference between the
+# (global) minimum free energy and and the highest energy encountered.
+sub delta_energy {
+    my ($self) = @_;
+    # Barrier height of the mfe basin is the explored energy bandwidth
+    my $delta_energy = $self->get_global_min->barrier_height;
+    return $delta_energy;
+}
 
 # Construct the file path to this Barriers file. Works only if it was
 # actually parsed from a file (of course...).
@@ -469,6 +477,11 @@ connected, however, modifying the rate matrix accordingly can lead to
 non-ergodicity (e.g. when basin 3 merged to 2, 2/3 merged to 1 because
 of a possible transition from 3 to 1, and basin 3 is then removed).  Returns a
 list of all removed mins (may be empty).
+
+=head3 $res->delta_energy()
+
+Get the delta_E of the landscape, i. e. the energy difference between the
+(global) minimum free energy and and the highest energy encountered.
 
 =head3 $res->has_bsize()
 
