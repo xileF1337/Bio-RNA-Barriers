@@ -93,4 +93,5 @@
 ^[.]git
 
 # Other files
-conda_env.yml
+\bconda_env[.]yml$
+\bupdate_version.sh$
