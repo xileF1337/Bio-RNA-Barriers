@@ -155,6 +155,30 @@ sub get_global_min {
     return $mfe_min;
 }
 
+# Get the global minimum free energy.
+sub mfe {
+    my ($self) = @_;
+    my $mfe = $self->get_global_min->mfe;
+    return $mfe;
+}
+
+# Get the delta_E of the landscape, i. e. the energy difference between the
+# (global) minimum free energy and and the highest energy encountered.
+sub delta_energy {
+    my ($self) = @_;
+    # Barrier height of the mfe basin is the explored energy bandwidth
+    my $delta_energy = $self->get_global_min->barrier_height;
+    return $delta_energy;
+}
+
+# Get the maximum energy of any structure in the landscape.
+sub max_energy {
+    my ($self) = @_;
+    # Energy values from Bar file have only 2 digits precision.
+    my $max_energy = sprintf "%.2f", $self->mfe + $self->delta_energy;
+    return $max_energy;
+}
+
 sub min_count {
     my $self = shift;
     my $min_count = $self->mins;
@@ -302,14 +326,6 @@ sub has_bsize {
     return $has_bsize;
 }
 
-# Get the delta_E of the landscape, i. e. the energy difference between the
-# (global) minimum free energy and and the highest energy encountered.
-sub delta_energy {
-    my ($self) = @_;
-    # Barrier height of the mfe basin is the explored energy bandwidth
-    my $delta_energy = $self->get_global_min->barrier_height;
-    return $delta_energy;
-}
 
 # Construct the file path to this Barriers file. Works only if it was
 # actually parsed from a file (of course...).
@@ -444,6 +460,19 @@ results file).
 
 Returns the basin represented by the (global) mfe structure (i.e. basin 1).
 
+=head3 $res->mfe()
+
+Get the global minimum free energy.
+
+=head3 $res->delta_energy()
+
+Get the delta_E of the landscape, i. e. the energy difference between the
+(global) minimum free energy and and the highest energy encountered.
+
+=head3 $res->max_energy()
+
+Get the maximum energy of any structure in the landscape.
+
 =head3 $res->min_count()
 
 Returns the total number of basins.
@@ -477,11 +506,6 @@ connected, however, modifying the rate matrix accordingly can lead to
 non-ergodicity (e.g. when basin 3 merged to 2, 2/3 merged to 1 because
 of a possible transition from 3 to 1, and basin 3 is then removed).  Returns a
 list of all removed mins (may be empty).
-
-=head3 $res->delta_energy()
-
-Get the delta_E of the landscape, i. e. the energy difference between the
-(global) minimum free energy and and the highest energy encountered.
 
 =head3 $res->has_bsize()
 
