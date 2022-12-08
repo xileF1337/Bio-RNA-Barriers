@@ -4,6 +4,7 @@ lib/Bio/RNA/Barriers.pm
 lib/Bio/RNA/Barriers/Minimum.pm
 lib/Bio/RNA/Barriers/RateMatrix.pm
 lib/Bio/RNA/Barriers/Results.pm
+LICENSE
 MANIFEST			This list of files
 META.json
 META.yml
