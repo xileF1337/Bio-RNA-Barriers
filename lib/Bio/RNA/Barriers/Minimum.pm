@@ -1,5 +1,5 @@
 package Bio::RNA::Barriers::Minimum;
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 use 5.012;
 use strict;
