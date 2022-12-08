@@ -17,4 +17,4 @@ pm_to_blib
 Bio-RNA-Barriers-*
 Bio-RNA-Barriers-*.tar.gz
 _Inline             # code compiled by Inline::C module
-
+MANIFEST.bak
