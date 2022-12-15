@@ -448,6 +448,25 @@ sub print_as_bin {
     }
 }
 
+# Print the rate matrix in the given format ('BIN' for binary, 'TXT' for text)
+# to the given output file handle. In case of text mode output, the handle can
+# be ommitted and the matrix will be printed to STDOUT. Internally,
+# print_as_text() or print_as_bin() is called accordingly.
+sub print_as {
+    my ($self, $file_type, $file_handle) = @_;
+
+    if ($file_type eq 'TXT') {
+        $self->print_as_text($file_handle);
+    }
+    elsif ($file_type eq 'BIN') {
+        $self->print_as_bin($file_handle);
+    }
+    else {      # spurious file type, die
+        confess "Unregonized rate matrix file type '$file_type', pass TXT or BIN";
+    }
+
+}
+
 # Return string containing binary the representation of the matrix (cf.
 # print_as_bin).
 sub serialize {
@@ -530,6 +549,7 @@ transition rate matrix.
     # Write binary matrix to file.
     open my $out_fh_bin, '>', '/path/to/output/rates.bin';
     $rate_matrix->print_as_bin($out_fh_bin);
+    # Alternatively: $rate_matrix->print_as('BIN', $out_fh_bin);
 
 =head1 DESCRIPTION
 
@@ -637,12 +657,19 @@ will then be deep-copied. C<@indices> may be unordered and contain duplicates.
 Print this matrix as text, either to the passed handle, or to STDOUT if
 C<$out_handle> is not provided.
 
-=head3 $mat->print_as_bin()
+=head3 $mat->print_as_bin($out_handle)
 
 Print this matrix as binary data, either to the passed handle, or to STDOUT if
 C<$out_handle> is not provided.
 
 Data format: matrix dimension as integer, then column by column as double.
+
+=head3 $mat->print_as($file_type, $out_handle)
+
+Print the rate matrix in the given format / file type ('BIN' for binary, 'TXT'
+for text) to the given output file handle. In case of text mode output, the
+handle can be ommitted and the matrix will be printed to STDOUT. Internally,
+print_as_text() or print_as_bin() is called accordingly.
 
 =head3 $mat->serialize()
 
