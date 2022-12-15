@@ -13,10 +13,12 @@ my $builder = Module::Build->new(
         'Module::Build' => '0',
     },
     build_requires => {
-        'Test::More' => '0',
-        'Test::NoWarnings'  => 1.04,
-        'Test::Exception'   => 0.43,
         'File::Slurp'       => 9999.23,
+        'File::Temp'        => 0.10,
+        'IO::File'          => 0,
+        'Test::Exception'   => 0.43,
+        'Test::More'        => '0',
+        'Test::NoWarnings'  => 1.04,
     },
     requires => {
         'Moose'                     => 2.2011,
