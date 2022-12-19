@@ -242,28 +242,49 @@ sub dim {
     return $dimension;
 }
 
-# Get the rate from state i to state j. States are 1-based (first state =
-# state 1) just as in the results file.
-sub rate_from_to {
-    my ($self, $from_state, $to_state) = @_;
-
-    # Check states are within bounds
-    confess "from_state $from_state is out of bounds"
-        unless $self->_state_is_in_bounds($from_state);
-    confess "to_state $to_state is out of bounds"
-        unless $self->_state_is_in_bounds($to_state);
-
-    # Retrieve rate.
-    my $rate = $self->_data->[$from_state-1][$to_state-1];
-    return $rate;
-}
-
 # Check whether given state is contained in the rate matrix.
 sub _state_is_in_bounds {
     my ($self, $state) = @_;
 
     my $is_in_bounds = ($state >= 1 && $state <= $self->dim);
     return $is_in_bounds;
+}
+
+# Check that given states are within the bounds of the rate matrix.
+sub _rate_assert_bounds {
+    my ($self, $from_state, $to_state) = @_;
+
+    confess "from_state $from_state is out of bounds"
+        unless $self->_state_is_in_bounds($from_state);
+    confess "to_state $to_state is out of bounds"
+        unless $self->_state_is_in_bounds($to_state);
+}
+
+# Get the rate from state i to state j. States are 1-based (first state =
+# state 1) just as in the results file.
+sub rate_from_to {
+    my ($self, $from_state, $to_state) = @_;
+
+    # Check states are within bounds
+    $self->_rate_assert_bounds($from_state, $to_state);
+
+    # Retrieve rate.
+    my $rate = $self->_data->[$from_state-1][$to_state-1];
+    return $rate;
+}
+
+# Get the rate from state i to state j. States are 1-based (first state =
+# state 1) just as in the results file.
+sub set_rate_from_to {
+    my ($self, $from_state, $to_state, $new_rate) = @_;
+
+    # Check states are within bounds and rate is non-negative.
+    $self->_rate_assert_bounds($from_state, $to_state);
+    confess "New rate must be non-negative, but is $new_rate"
+        unless $new_rate >= 0;
+
+    # Update rate.
+    $self->_data->[$from_state-1][$to_state-1] = $new_rate;
 }
 
 # Returns a sorted list of all states connected to the (mfe) state 1.
