@@ -261,7 +261,7 @@ sub _rate_assert_bounds {
 }
 
 # Get the rate from state i to state j. States are 1-based (first state =
-# state 1) just as in the results file.
+# state 1), just as in the results file.
 sub rate_from_to {
     my ($self, $from_state, $to_state) = @_;
 
@@ -273,8 +273,8 @@ sub rate_from_to {
     return $rate;
 }
 
-# Get the rate from state i to state j. States are 1-based (first state =
-# state 1) just as in the results file.
+# Set the rate from state i to state j. States are 1-based (first state =
+# state 1), just as in the results file.
 sub set_rate_from_to {
     my ($self, $from_state, $to_state, $new_rate) = @_;
 
@@ -643,7 +643,12 @@ Get the dimension (= number of rows = number of columns) of the matrix.
 =head3 $mat->rate_from_to($i, $j)
 
 Get the rate from state i to state j. States are 1-based (first state = state
-1) just as in the results file.
+1), just as in the results file.
+
+=head3 $mat->set_rate_from_to($i, $j, $new_rate)
+
+Set the rate from state i to state j. States are 1-based (first state =
+state 1), just as in the results file.
 
 =head3 $mat->remove_states(@indices)
 
