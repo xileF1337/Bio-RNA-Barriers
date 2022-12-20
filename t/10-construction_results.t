@@ -9,7 +9,7 @@ use Test::Exception;
 use File::Spec::Functions qw(catfile);
 use File::Slurp qw(read_file);
 
-my $test_count = 7;
+my $test_count = 8;
 plan tests => $test_count + 1;            # +1 for Test::NoWarnings
 
 use Bio::RNA::Barriers;
@@ -19,6 +19,7 @@ my $barfile_bsize           = catfile qw(t data with_bsize.bar);
 my $barfile_saddle          = catfile qw(t data with_saddle.bar);
 my $barfile_bsize_saddle    = catfile qw(t data with_bsize_saddle.bar);
 my $barfile_without_bsize   = catfile qw(t data without_bsize.bar);
+my $barfile_starred         = catfile qw(t data starred.bar);
 
 # These should die
 my $barfile_invalid_saddle1 = catfile qw(t data with_invalid_saddle1.bar);
@@ -59,6 +60,7 @@ test_construction_lives $barfile_bsize,           'with_bsize';
 test_construction_lives $barfile_saddle,          'with_saddle';
 test_construction_lives $barfile_bsize_saddle,    'with_bsize_saddle';
 test_construction_lives $barfile_without_bsize,   'without_bsize';
+test_construction_lives $barfile_starred,         'starred';
 
 test_construction_dies  $barfile_invalid_saddle1, 'with_invalid_saddle1';
 test_construction_dies  $barfile_invalid_saddle2, 'with_invalid_saddle2';

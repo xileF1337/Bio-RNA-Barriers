@@ -7,7 +7,7 @@ use Test::More;
 use Test::NoWarnings;            # produces one additional test!
 use File::Spec::Functions;
 
-plan tests => 4 + 1;            # +1 for Test::NoWarnings
+plan tests => 5 + 1;            # +1 for Test::NoWarnings
 
 use Bio::RNA::Barriers;
 
@@ -15,11 +15,13 @@ my $barfile_with_bsize        = catfile qw(t data with_bsize.bar);
 my $barfile_with_saddle       = catfile qw(t data with_saddle.bar);
 my $barfile_with_bsize_saddle = catfile qw(t data with_bsize_saddle.bar);
 my $barfile_without_bsize     = catfile qw(t data without_bsize.bar);
+my $barfile_starred           = catfile qw(t data starred.bar);
 
 run_tests( $barfile_with_bsize,        'with_bsize'        );
 run_tests( $barfile_with_saddle,       'with_saddle'       );
 run_tests( $barfile_with_bsize_saddle, 'with_bsize_saddle' );
 run_tests( $barfile_without_bsize,     'without_bsize'     );
+run_tests( $barfile_starred,           'starred'           );
 
 # Run actual tests.
 sub run_tests {   # has_bsize == true
