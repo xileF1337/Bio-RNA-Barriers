@@ -95,3 +95,4 @@
 # Other files
 \bconda_env[.]yml$
 \bupdate_version.sh$
+[.]nfs[\da-f]+$
