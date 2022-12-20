@@ -112,6 +112,18 @@ has 'saddle_struct' => (
     predicate => 'has_saddle_struct',
 );
 
+# To mark "starred" structures (ligand bound). The stars a chomped off of the
+# structure string.
+# Note: Per convention this attribute is set to 0 for an unstarred minimum in
+# a *starred* landscape, and is not set (or set to undef) for an unstarred
+# minimum in an *unstarred* landscape. This can make a difference, e.g. in
+# brief().
+has 'has_star' => (
+    is => 'rw',
+    isa => 'Bool',
+    default => sub { undef },
+);
+
 # Optional reference to the father minimum.
 has 'father' => (
     is        => 'rw',
@@ -166,6 +178,7 @@ around BUILDARGS => sub {
 
     my @args;                               # as passed to the constructor
     if ( @_ == 1 && !ref $_[0] ) {          # process line from bar file
+        my %args;
         my $input_line = shift;
         my @fields = split /\s+/, $input_line;
         shift @fields if $fields[0] eq q{}; # drop empty first field
@@ -175,25 +188,34 @@ around BUILDARGS => sub {
         }
 
         # Add default args
-        push @args, $_ => shift @fields foreach @default_attribs;
-        # @args = map { $_ => shift @fields } @attributes;
+        $args{$_} = shift @fields foreach @default_attribs;
+
+        # Handle starred structures, i.e. structures with a trailing asterisk
+        # (*) denoting a bound ligand. Remove the star and add an attribute
+        # for it.
+        if ($args{struct} =~ s/[*]$//) {
+            $args{has_star} = 1;
+        }
 
         # Add saddle struct if present
         if (@fields == 1 or @fields == @opt_attributes) {
-            push @args, saddle_struct => shift @fields;
+            $args{saddle_struct} = shift @fields;
         }
 
         # Add bsize attributes if present
         if (@fields == @bsize_attributes) {
-            push @args, $_ => shift @fields foreach @bsize_attributes;
+            $args{$_} = shift @fields foreach @bsize_attributes;
         }
 
         confess "Unrecognized number of fields on input line:\n$input_line"
             unless @fields == 0;            # all fields used up?
+
+        @args = \%args;                     # pass hash ref of these args.
     }
     else {
         @args = @_;
     }
+
     return $class->$orig(@args);
 };
 
@@ -254,8 +276,17 @@ sub stringify {
 sub brief {
     my $self = shift;
 
+    # Consider "starred" structures (ligand support).
+    # Note: When using the starred move set, there is a space inserted after
+    # non-starred structures to align starred and non-starred structures. To
+    # distinguish, has_star is set to 0 for an unstarred min in a landscape
+    # with stars, and set it to undef if no minimum has stars.
+    my $star = !defined $self->has_star ? q{}
+               : $self->has_star ? '*'
+               : q{ };
+
     # Default attributes
-    my $brief_string = sprintf "%4d %s %6.2f %4d %6.2f",
+    my $brief_string = sprintf "%4d %s$star %6.2f %4d %6.2f",
                                 map {$self->{$_}} @default_attribs;
 
     return $brief_string;

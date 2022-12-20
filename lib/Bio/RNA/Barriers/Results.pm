@@ -108,13 +108,23 @@ sub _read_barriers_file {
     # minima construction because, if several minima share the same
     # energy, a father may have a higher index than the doughter min (and
     # thus not have been parsed when parsing the doughter).
+    my $star_found;
     foreach my $min (@mins) {
+        $star_found ||= $min->has_star;     # does anyone have a star?
         if ($min->has_father) {
             my $father = $mins[$min->father_index - 1];
             confess 'Inconsistent father indexing in Barriers file'
                 unless ref $father
                        and $father->index == $min->father_index;
             $min->father($father);
+        }
+    }
+
+    # If any min is starred, set all non-starred minima to 0 explicitely,
+    # cf. Minimum::brief().
+    if ($star_found) {
+        foreach my $min (@mins) {
+            $min->has_star(0) unless $min->has_star;
         }
     }
 
